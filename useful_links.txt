@@ -1,0 +1,8 @@
+http://theatticlight.net/posts/Using-a-Parallax-RFID-reader-on-the-Raspberry-PI/ - RFID instructions 
+http://denethor.wlu.ca/projects/sensors/28140-28340-RFID_Reader-v2.1.pdf - RFID data sheet
+http://denethor.wlu.ca/pc320/lectures/optobreadbeam.pdf - optisolator pdf 
+http://denethor.wlu.ca/pc320/datasheets/ps2501.pdf - optisolator datasheet
+
+decent tutorial
+https://medium.com/@coryaspencer/using-the-parallax-serial-rfid-reader-with-the-raspberry-pi-8c948090e687
+https://github.com/cspencer/parallax-rfid-reader
