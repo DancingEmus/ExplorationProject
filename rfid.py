@@ -3,179 +3,177 @@ import time
 import sqlite3
 import RPi.GPIO as GPIO
 
-GREEN_LED = 6
-RED_LED = 5
-BUZZER = 25
+GREEN_LED_PIN = 6
+RED_LED_PIN = 5
+BUZZER_PIN = 25
+TOTAL_BITS = 12
+STRIPPED_BITS = 10
+BAN_USER = 1
+ADD_USER = 0
+SECONDS = 2
+HERTZ = 2400
+DATABASE = 'tagreads.db'
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GREEN_LED, GPIO.OUT)
 GPIO.setup(RED_LED, GPIO.OUT)
 GPIO.setup(BUZZER, GPIO.OUT)
 
 # open sqlite database file
-db = sqlite3.connect('tagreads.db')
+db = sqlite3.connect(DATABASE)
 cursor = db.cursor()
 
 # check that the correct tables exists in database; create them if they do not
 tables = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND $
 if len(tables) == 0 :
-  cursor.execute("CREATE table tagreads (timestamp, tagid text PRIMARY KEY, ban$
+cursor.execute("CREATE table tagreads (timestamp, tagid text PRIMARY KEY, ban$
 
 # connect to serial port on which the RFID reader is attached
-port = serial.Serial('/dev/ttyAMA0', 2400, timeout=1)
+port = serial.Serial('/dev/ttyAMA0', HERTZ, timeout=1)
 
-def rfid():
+def rfid_read():
 
-  count = 0
+count = 0
+try:
+while true:
+  # attempt to read in a tag
   try:
-    while count < 100000:
-      # attempt to read in a tag
-      try:
-        tagid = port.read(12)
-          # if tag read success full, save it to database and wait half a secon$
-        # else try again
-        if(len(tagid) != 0):
+	tagid = port.read(TOTAL_BITS)
+	  # if tag read success full, save it to database and wait half a secon$
+	# else try again
+	if(len(tagid) != 0):
 
 
-          tagid = tagid.strip()
-          timestamp = time.time()
-          if (len(tagid) == 10):
-            cursor.execute("SELECT banned from tagreads WHERE tagid = ?",[tagid$
-            row = cursor.fetchall()
-			if (len(row) == 0):
-              print("Security Alert! Unauthorized access attempt!")
-              GPIO.output(BUZZER, GPIO.HIGH)
-              GPIO.output(RED_LED, GPIO.HIGH)
-              time.sleep(1)
-              GPIO.output(RED_LED, GPIO.LOW)
-              GPIO.output(BUZZER, GPIO.LOW)
-            else:
-              tup = row[0]
-			  num = tup[0]
-			  print(num)
-              if (num == 1):
-                print("Security Alert! User is banned!")
-                GPIO.output(RED_LED, GPIO.HIGH)
-                GPIO.output(BUZZER, GPIO.HIGH)
-                time.sleep(.5)
-                GPIO.output(BUZZER, GPIO.LOW)
-                GPIO.output(RED_LED, GPIO.LOW)
-                time.sleep(.2)
-                GPIO.output(RED_LED, GPIO.HIGH)
-				 GPIO.output(BUZZER, GPIO.HIGH)
-                time.sleep(.2)
-                GPIO.output(RED_LED, GPIO.LOW)
-                GPIO.output(BUZZER, GPIO.LOW)
-              else:
-                print("Welcome!")
-                GPIO.output(GREEN_LED, GPIO.HIGH)
-                time.sleep(1)
-                GPIO.output(GREEN_LED, GPIO.LOW)
-            print("Time:%s, Tag:%s" % (timestamp,tagid))
-		except(OSError, serial.SerialException):
-			port.close()
-			time.sleep(2)
-			port.open()
+	  tagid = tagid.strip()
+	  timestamp = time.time()
+	  if (len(tagid) == STRIPPED_BITS):
+		cursor.execute("SELECT banned from tagreads WHERE tagid = ?",[tagid$
+		row = cursor.fetchall()
+					if (len(row) == 0):
+		  print("Security Alert! Unauthorized access attempt!")
+		  GPIO.output(BUZZER_PIN, GPIO.HIGH)
+		  GPIO.output(RED_LED_PIN, GPIO.HIGH)
+		  time.sleep(1)
+		  GPIO.output(RED_LED_PIN, GPIO.LOW)
+		  GPIO.output(BUZZER_PIN, GPIO.LOW)
+		else:
+		  tup = row[0]
+					  num = tup[0]
+					  print(num)
+		  if (num == 1):
+			print("Security Alert! User is banned!")
+			GPIO.output(RED_LED_PIN, GPIO.HIGH)
+			GPIO.output(BUZZER_PIN, GPIO.HIGH)
+			time.sleep(.5)
+			GPIO.output(BUZZER, GPIO.LOW)
+			GPIO.output(RED_LED_PIN, GPIO.LOW)
+			time.sleep(.2)
+			GPIO.output(RED_LED_PIN, GPIO.HIGH)
+							 GPIO.output(BUZZER_PIN, GPIO.HIGH)
+			time.sleep(.2)
+			GPIO.output(RED_LED_PIN, GPIO.LOW)
+			GPIO.output(BUZZER_PIN, GPIO.LOW)
+		  else:
+			print("Welcome!")
+			GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
+			time.sleep(1)
+			GPIO.output(GREEN_LED_PIN, GPIO.LOW)
+		print("Time:%s, Tag:%s" % (timestamp,tagid))
+			except(OSError, serial.SerialException):
+					port.close()
+					time.sleep(SECONDS)
+					port.open()
 
 
 
 
-        time.sleep(2)
+	time.sleep(2)
 
 	count += 1
 
 	except KeyboardInterrupt:
-		port.close()
-		db.commit()
-		db.close()
-		print ("Program interrupted")
+			port.close()
+			db.commit()
+			db.close()
+			print ("Program interrupted")
 
 	return
-	
-def add(decision):
-  #lastid = ""
-  #count = 0
+
+def add_user(decision):
+try:
+while True:
   try:
-    while True:
-      # attempt to read in a tag
-      try:
-        tagid = port.read(12)
-        # if tag read success full, save it to database and wait half a second;
-        # else try again
-		 print("Reading:",tagid)
-        if(len(tagid) != 0) :
+	tagid = port.read(TOTAL_BITS)
+			 print("Reading:",tagid)
+	if(len(tagid) != 0) :
 
 
-          tagid = tagid.strip()
-          timestamp = time.time()
+	  tagid = tagid.strip()
+	  timestamp = time.time()
 
-          if (len(tagid) == 10):
+	  if (len(tagid) == STRIPPED_BITS):
 
-            try:
-				cursor.execute("INSERT INTO tagreads VALUES (?,?,?);", (timestamp$
+		try:
+							cursor.execute("INSERT INTO tagreads VALUES (?,?,?);", (timestamp$
 
-              if (decision == 0):
-                print("User Inserted at: Time:%s, Tag:%s" % (timestamp,tagid))
-                GPIO.output(GREEN_LED, GPIO.HIGH)
-                time.sleep(1)
-                GPIO.output(GREEN_LED, GPIO.LOW)
-              else:
-                print("User Banned at: Time:%s, Tag:%s" % (timestamp,tagid))
-                GPIO.output(RED_LED, GPIO.HIGH)
-				time.sleep(1)
-                GPIO.output(RED_LED, GPIO.LOW)
-            except sqlite3.IntegrityError as e:
-                cursor.execute("UPDATE tagreads SET timestamp = ?, tagid = ?, ban$
-                print("User ban has been updated")
-                time.sleep(1)
-            finally:
-				db.commit()
-				#lastid = tagid
-				tagid = ""
-				break
-      except(OSError, serial.SerialException):
-        port.close()
-        time.sleep(2)
-        port.open()
+		  if (decision == ADD_USER):
+			print("User Inserted at: Time:%s, Tag:%s" % (timestamp,tagid))
+			GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
+			time.sleep(1)
+			GPIO.output(GREEN_LED_PIN, GPIO.LOW)
+		  else:
+			print("User Banned at: Time:%s, Tag:%s" % (timestamp,tagid))
+			GPIO.output(RED_LED_PIN, GPIO.HIGH)
+							time.sleep(1)
+			GPIO.output(RED_LED_PIN, GPIO.LOW)
+		except sqlite3.IntegrityError as e:
+			cursor.execute("UPDATE tagreads SET timestamp = ?, tagid = ?, ban$
+			print("User ban has been updated")
+			time.sleep(1)
+		finally:
+							db.commit()
+							tagid = ""
+							break
+  except(OSError, serial.SerialException):
+	port.close()
+	time.sleep(SECONDS)
+	port.open()
 
 
 
-        time.sleep(2)
+	time.sleep(SECONDS)
 
-		#lastid = tagid
-    #count += 1
 
-  except KeyboardInterrupt:
-    port.close()
-    db.commit()
-    db.close()
-    print ("Program interrupted")
+except KeyboardInterrupt:
+port.close()
+db.commit()
+db.close()
+print ("Program interrupted")
 
-  return
+return
 
 
 def main():
 
 
-  while (True):
-    decision = input("Would you like to add a user?: (Y/N) ")
-    if decision == "Y" or decision == "y":
-      decision2 = input("Would you like to ban users?: (Y/N) ")
-	   if decision2 == "Y" or decision2 == "y":
-        print("Scan user you would like to ban.")
-        add(1)
-      else:
-        print("Scan user you would like to add.")
-        add(0)
+while (True):
+	decision = input("Would you like to add a user?: (Y/N) ")
+	if decision == "Y" or decision == "y":
+		decision2 = input("Would you like to ban users?: (Y/N) ")
+		if decision2 == "Y" or decision2 == "y":
+			print("Scan user you would like to ban.")
+			add_user(BAN_USER)
+		else:
+			print("Scan user you would like to add.")
+			add_user(ADD_USER)
 
-    else:
-      break
+	else:
+		break
 
-	print("Reading RFID...")
-	rfid()
+print("Reading RFID...")
+rfid_read()
 
-	return
+return
 
 
 main()
-
-
