@@ -24,7 +24,7 @@ db = sqlite3.connect(DATABASE)
 cursor = db.cursor()
 
 # check that the correct tables exists in database; create them if they do not
-tables = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND $
+tables = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND (name='tagreads');").fetchall()
 if len(tables) == 0 :
 cursor.execute("CREATE table tagreads (timestamp, tagid text PRIMARY KEY, ban$
 
@@ -39,15 +39,13 @@ while true:
   # attempt to read in a tag
   try:
 	tagid = port.read(TOTAL_BITS)
-	  # if tag read success full, save it to database and wait half a secon$
-	# else try again
 	if(len(tagid) != 0):
 
 
 	  tagid = tagid.strip()
 	  timestamp = time.time()
 	  if (len(tagid) == STRIPPED_BITS):
-		cursor.execute("SELECT banned from tagreads WHERE tagid = ?",[tagid$
+		cursor.execute("SELECT banned from tagreads WHERE tagid = ?",[tagid])
 		row = cursor.fetchall()
 					if (len(row) == 0):
 		  print("Security Alert! Unauthorized access attempt!")
@@ -114,7 +112,7 @@ while True:
 	  if (len(tagid) == STRIPPED_BITS):
 
 		try:
-							cursor.execute("INSERT INTO tagreads VALUES (?,?,?);", (timestamp$
+			cursor.execute("INSERT INTO tagreads VALUES (?,?,?);", (timestamp, tagid, banned))
 
 		  if (decision == ADD_USER):
 			print("User Inserted at: Time:%s, Tag:%s" % (timestamp,tagid))
@@ -127,7 +125,7 @@ while True:
 							time.sleep(1)
 			GPIO.output(RED_LED_PIN, GPIO.LOW)
 		except sqlite3.IntegrityError as e:
-			cursor.execute("UPDATE tagreads SET timestamp = ?, tagid = ?, ban$
+			cursor.execute("UPDATE tagreads SET timestamp = ?, tagid = ?, ban = ?, [timestamp, tagid, decision])
 			print("User ban has been updated")
 			time.sleep(1)
 		finally:
