@@ -125,13 +125,13 @@ while True:
 							time.sleep(1)
 			GPIO.output(RED_LED_PIN, GPIO.LOW)
 		except sqlite3.IntegrityError as e:
-			cursor.execute("UPDATE tagreads SET timestamp = ?, tagid = ?, ban = ?, [timestamp, tagid, decision])
+			cursor.execute("UPDATE tagreads SET timestamp = ?, tagid = ?, ban = ?, [timestamp, tagid, decision]")
 			print("User ban has been updated")
 			time.sleep(1)
 		finally:
-							db.commit()
-							tagid = ""
-							break
+			db.commit()
+			tagid = ""
+			break
   except(OSError, serial.SerialException):
 	port.close()
 	time.sleep(SECONDS)
