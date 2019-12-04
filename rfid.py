@@ -26,7 +26,7 @@ cursor = db.cursor()
 # check that the correct tables exists in database; create them if they do not
 tables = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND (name='tagreads');").fetchall()
 if len(tables) == 0 :
-cursor.execute("CREATE table tagreads (timestamp, tagid text PRIMARY KEY, ban$
+cursor.execute("CREATE table tagreads (timestamp, tagid text PRIMARY KEY, banned)")
 
 # connect to serial port on which the RFID reader is attached
 port = serial.Serial('/dev/ttyAMA0', HERTZ, timeout=1)
