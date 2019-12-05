@@ -1,5 +1,5 @@
 # Exploration Project
-CP320 Exploration Project - RFID reader with database support\n
+CP320 Exploration Project - RFID reader with database support\
 By: Aayush Sheth: 160642890 & Michael Pintur: 150785070 
 
 ## Overview
