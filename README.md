@@ -22,7 +22,7 @@ or click the [link here](https://youtu.be/AqpAeMQy2bc)
 
 
 
-##Useful URLS
+## Useful URLS
 1. https://www.raspberrypi.org/forums/ 
 Link to the raspberry pi forums. It was helpful because it allowed to us find a lot of information on how to integrate our devices with the pi and allowed us to debug issues quicker.
 
