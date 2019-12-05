@@ -10,10 +10,10 @@ In terms of hardware the first issue we had was that the pi only has one serial 
 
 
 ## Libraries Needed
-1.https://docs.python.org/2/library/sqlite3.html
+1. https://docs.python.org/2/library/sqlite3.html
 SQLite library was needed for database operations.
 
-2.https://pyserial.readthedocs.io/en/latest/pyserial.html
+2. https://pyserial.readthedocs.io/en/latest/pyserial.html
 Serial library was required as the RFID reader ran on serial ports.
 
 
