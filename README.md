@@ -10,16 +10,11 @@ In terms of hardware the first issue we had was that the pi only has one serial 
 
 
 ## Libraries Needed
-1. https://docs.python.org/2/library/sqlite3.html
+1.https://docs.python.org/2/library/sqlite3.html
 SQLite library was needed for database operations.
 
 2.https://pyserial.readthedocs.io/en/latest/pyserial.html
 Serial library was required as the RFID reader ran on serial ports.
-
-
-[![Watch the video](https://youtu.be/AqpAeMQy2bc)
-or click the [link here](https://youtu.be/AqpAeMQy2bc)
-
 
 
 ## Useful URLS
@@ -32,4 +27,8 @@ The data sheet for the RFID reader, gave us details on how to wire up the RFID r
 3. http://denethor.wlu.ca/raspberry_pi/rpi_RFID.shtml
 Link to Terry's webpage about the RFID reader. Gives an overview about the device and has examples on how to write code to have it work with the serial interface on the pi.
 
+
+## Video
+[![Watch the video](https://youtu.be/AqpAeMQy2bc)
+or click the [link here](https://youtu.be/AqpAeMQy2bc)
 
