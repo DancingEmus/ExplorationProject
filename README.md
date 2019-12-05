@@ -29,4 +29,4 @@ Link to Terry's webpage about the RFID reader. Gives an overview about the devic
 
 
 ## Video
-[![Test](https://img.youtube.com/vi/AqpAeMQy2bc&t=16s/0.jpg)](https://www.youtube.com/watch?v=AqpAeMQy2bc&t=16s)
+You can watch the video here : https://www.youtube.com/watch?v=AqpAeMQy2bc&t=16s
